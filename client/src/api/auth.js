@@ -1,9 +1,10 @@
-import instance from "./axios";
+import instance from './axios';
 
-const API = "http://localhost:3000/api";
+// Registro de usuario
+export const registerRequest = (user) => instance.post('/register', user);
 
-export const registerRequest = user => instance.post(`/register`, user);
+// Inicio de sesión
+export const loginRequest = (user) => instance.post('/login', user);
 
-export const loginRequest = user => instance.post(`/login`, user)
-
-export const verifyTokenRequest = () => instance.get('/verify')
+// Verificación del token
+export const verifyTokenRequest = () => instance.get('/verify');

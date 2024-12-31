@@ -1,10 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const url = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+// Usa la URL del backend desde las variables de entorno o localhost como fallback
+const baseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const instance = axios.create({
-    baseURL: `${url}/api`,
-    withCredentials: true
-})
+  baseURL: `${baseURL}/api`, // Base URL para las rutas de la API
+  withCredentials: true, // Necesario para manejar cookies y credenciales
+});
 
-export default instance
+export default instance;
