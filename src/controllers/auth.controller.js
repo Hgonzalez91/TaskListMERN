@@ -22,7 +22,12 @@ export const register = async (req, res) => {
 
     const userSaved = await newUser.save();
     const token = await createAccesToken({ id: userSaved._id });
-    res.cookie("token", token);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Solo en HTTPS
+      sameSite: 'Strict', // O 'Lax' dependiendo de tu necesidad
+      maxAge: 24 * 60 * 60 * 1000, // 1 día
+    });
     res.json({
       id: userSaved.id,
       username: userSaved.username,
@@ -47,7 +52,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
 
     const token = await createAccesToken({ id: userFound._id });
-    res.cookie("token", token);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Solo en HTTPS
+      sameSite: 'Strict', // O 'Lax' dependiendo de tu necesidad
+      maxAge: 24 * 60 * 60 * 1000, // 1 día
+    });
     res.json({
       id: userFound.id,
       username: userFound.username,
