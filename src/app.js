@@ -26,7 +26,7 @@ app.use("/api", tasksRoutes);
 
 //Ruta raiz (get /)
 app.get("/", (req, res) => {
-    res.redirect("/api");
+    res.send("Welcome to the API. Use /api for API endpoints.");
 });
 
 export default app;
