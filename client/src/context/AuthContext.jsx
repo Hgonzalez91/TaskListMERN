@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used whitin an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      setErrors(error.response.data);
+      setErrors(error.response?.data || ["Unknown error"]);
     }
   };
 
@@ -36,15 +36,12 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      if (Array.isArray(error.response.data)) {
-        return setErrors(error.response.data);
-      }
-      setErrors([error.response.data.message]);
+      setErrors([error.response?.data.message || "Unknown error"]);
     }
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    Cookies.remove("token"); // Si quieres borrar la cookie directamente (aunque no será necesaria si es httpOnly)
     setIsAuthenticated(false);
     setUser(null);
   };
@@ -60,26 +57,21 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     async function checkLogin() {
-      const cookies = Cookies.get();
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return setUser(null);
-      }
       try {
-        const res = await verifyTokenRequest(cookies.token);
-        if (!res.data) {
-          setIsAuthenticated(false);
-          setLoading(false);
-          return;
-        }
+        // No intentamos leer cookies directamente, ya que el backend maneja la autenticación con httpOnly
+        const res = await verifyTokenRequest(); // Aquí, el backend debería validar el token en la cookie
 
-        setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
+        if (res.data) {
+          setIsAuthenticated(true);
+          setUser(res.data);
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+        }
       } catch (error) {
         setIsAuthenticated(false);
         setUser(null);
+      } finally {
         setLoading(false);
       }
     }
