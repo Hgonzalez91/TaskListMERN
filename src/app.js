@@ -1,6 +1,5 @@
 import express from 'express'
 import morgan from 'morgan'
-import coockieParser from 'cookie-parser'
 import authRoutes from './routes/auth.routes.js'
 import tasksRoutes from './routes/tasks.routes.js'
 import cookieParser from 'cookie-parser';
@@ -21,7 +20,13 @@ app.use(express.json())
 //Para convertir una cookie en json
 app.use(cookieParser())
 
+//Rutas de la API
 app.use("/api", authRoutes);
 app.use("/api", tasksRoutes);
+
+//Ruta raiz (get /)
+app.get("/", (req, res) => {
+    res.redirect("/api");
+});
 
 export default app;
